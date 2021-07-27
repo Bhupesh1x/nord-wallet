@@ -41,8 +41,8 @@ function App() {
   };
 
   const logoutAccount = async () => {
-    await provider.close();
     window.location.reload(false);
+    await provider.close();
   };
 
   const updateBalance = async (fromAddress) => {
