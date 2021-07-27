@@ -5,6 +5,10 @@ import { Button, TextField } from "@material-ui/core";
 import "./App.css";
 import { useState } from "react";
 
+const provider = new WalletConnectProvider({
+  infuraId: "27e484dcd9e3efcfd25a83a78777cdf1", // Required
+});
+
 function App() {
   const [active, setActive] = useState(false);
   const [accountss, setAccountss] = useState();
@@ -31,16 +35,13 @@ function App() {
   // connection refused in wallet
 
   const getWalletAccount = async () => {
-    const provider = new WalletConnectProvider({
-      infuraId: "27e484dcd9e3efcfd25a83a78777cdf1", // Required
-    });
-
     await provider.enable().catch();
     setAccountss(provider.wc.accounts[0]);
     console.log(provider.wc.accounts[0]);
   };
 
   const logoutAccount = async () => {
+    await provider.close();
     window.location.reload(false);
   };
 
