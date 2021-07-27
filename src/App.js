@@ -41,6 +41,7 @@ function App() {
       console.log(provider.wc.accounts[0]);
     } catch (error) {
       console.error(error);
+      window.location.reload(false);
     }
   };
 
