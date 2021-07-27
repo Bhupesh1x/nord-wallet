@@ -35,9 +35,13 @@ function App() {
   // connection refused in wallet
 
   const getWalletAccount = async () => {
-    await provider.enable().catch();
-    setAccountss(provider.wc.accounts[0]);
-    console.log(provider.wc.accounts[0]);
+    try {
+      await provider.enable().catch();
+      setAccountss(provider.wc.accounts[0]);
+      console.log(provider.wc.accounts[0]);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const logoutAccount = async () => {
