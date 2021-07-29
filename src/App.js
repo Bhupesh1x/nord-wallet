@@ -11,6 +11,8 @@ const provider = new WalletConnectProvider({
 
 function App() {
   const [active, setActive] = useState(false);
+  const [metamask, setMetamask] = useState(false);
+  const [walletConnect, setWalletConnect] = useState(false);
   const [accountss, setAccountss] = useState();
   const { balance, address, message, setAddress, setBalance } = useStoreApi();
   const web3 = Web3();
@@ -23,6 +25,7 @@ function App() {
         web3.eth.getAccounts().then((accounts) => {
           setAddress(accounts[0]);
           updateBalance(accounts[0]);
+          setMetamask(!walletConnect);
         });
       } catch (error) {
         console.error(error);
@@ -39,6 +42,7 @@ function App() {
       await provider.enable().catch();
       setAccountss(provider.wc.accounts[0]);
       console.log(provider.wc.accounts[0]);
+      setWalletConnect(!metamask);
     } catch (error) {
       console.error(error);
       window.location.reload(false);
@@ -48,6 +52,7 @@ function App() {
   const logoutAccount = async () => {
     window.location.reload(false);
     await provider.close();
+    await window.ethereum.close();
   };
 
   const updateBalance = async (fromAddress) => {
@@ -116,13 +121,13 @@ function App() {
             </Button>
             <br />
             <br />
-            {address ? (
+            {metamask && address ? (
               <>
                 <p>Your account : {address}</p>
                 <p> Balance: {balance} </p>
               </>
             ) : null}
-            {accountss ? (
+            {walletConnect && accountss ? (
               <>
                 <p>Your account : {accountss} </p>
               </>
@@ -149,7 +154,7 @@ function App() {
               >
                 Send Crypto
               </Button>
-            </form>{" "}
+            </form>
           </>
         )}
       </div>
