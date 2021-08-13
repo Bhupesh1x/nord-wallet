@@ -5,3 +5,66 @@
   justify-content: center;
   height: 100vh;
 }
+.meta__data {
+  border-bottom: 1px solid black;
+}
+.connect__form {
+  margin-top: -39px !important;
+}
+.app__tableData {
+  margin-top: -80px;
+  width: 87%;
+  background: #ffffff;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.03);
+  border-radius: 22px;
+}
+.app__tableNoData {
+  margin-top: -80px;
+  margin-left: 140px;
+}
+.tableConatainer {
+  width: 98vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.03);
+  border-radius: 22px;
+}
+.table__Heading {
+  font-size: 16px;
+  padding: 10px 20px;
+  background: #ffffff;
+  box-shadow: 0px 2px 49px rgba(0, 0, 0, 0.19);
+}
+.table__heading {
+  background-color: #b1f8f2;
+  font-size: 18px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+.app__mainTable {
+  height: fit-content;
+  max-height: 480px !important;
+  overflow: scroll;
+  margin-bottom: 40px;
+}
+/* Hide scrollbar for Chrome, Safari and Opera */
+.app__mainTable::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.app__mainTable {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.table__value {
+  color: gray;
+  margin-left: 6px;
+  font-weight: 500;
+}
+.table__values {
+  color: #8900fa;
+  font-weight: 700;
+}
