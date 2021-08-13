@@ -3,26 +3,24 @@ import Web3 from "./useWeb3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Button, TextField } from "@material-ui/core";
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
-
-const provider = new WalletConnectProvider({
-  infuraId: "27e484dcd9e3efcfd25a83a78777cdf1", // Required
-});
 
 function App() {
   const [active, setActive] = useState(false);
+  const [showTransaction, setShowTransaction] = useState(false);
+  const [accountss, setAccountss] = useState();
+  const { balance, address, message, setAddress, setBalance } = useStoreApi();
   const [metamask, setMetamask] = useState(false);
   const [walletConnect, setWalletConnect] = useState(false);
-  const [accountss, setAccountss] = useState();
-  const [hash, setHash] = useState("");
+  const web3 = Web3();
   const [transaction, setTransaction] = useState([]);
-  const [showTransaction, setShowTransaction] = useState(false);
-  const { balance, address, message, setAddress, setBalance } = useStoreApi();
   const api__key = "XFNUDYK6ZE39ANZ6B4CTJ6SUGTDD42A1V6";
   const test__address = "0x5411c6309AF85919E4816913476a58e90421AECD";
 
-  const web3 = Web3();
+  const provider = new WalletConnectProvider({
+    infuraId: "27e484dcd9e3efcfd25a83a78777cdf1", // Required
+  });
 
   // get user account on button click
   const getUserAccount = async () => {
@@ -34,12 +32,8 @@ function App() {
           updateBalance(accounts[0]);
           setMetamask(!walletConnect);
         });
-        // web3.eth.getTransactionCount(address, function (error, result) {
-        //   if (!error) setTransaction(JSON.stringify(result));
-        //   else console.error(error);
-        // });
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     } else {
       alert("Metamask extensions not detected!");
@@ -52,21 +46,36 @@ function App() {
         `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=${api__key}`
       );
       setTransaction(result.data.result);
+      console.log("metamask", result);
       setShowTransaction(true);
     } catch (err) {
       console.log(err.message);
     }
   };
 
-  console.log("transaction is", transaction);
+  const getTransactionWallet = async () => {
+    try {
+      const result = await axios.get(
+        `https://api.etherscan.io/api?module=account&action=txlist&address=${accountss}&startblock=0&endblock=99999999&sort=asc&apikey=${api__key}`
+      );
+      setTransaction(result.data.result);
+      console.log("wallet is", result);
+      setShowTransaction(true);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   // connection refused in wallet
 
   const getWalletAccount = async () => {
     try {
+      const provider = new WalletConnectProvider({
+        infuraId: "27e484dcd9e3efcfd25a83a78777cdf1", // Required
+      });
+
       await provider.enable().catch();
       setAccountss(provider.wc.accounts[0]);
-      console.log(provider.wc.accounts[0]);
       setWalletConnect(!metamask);
     } catch (error) {
       console.error(error);
@@ -80,6 +89,11 @@ function App() {
     await window.ethereum.close();
   };
 
+  const logoutAccountWallet = async () => {
+    await provider.close();
+    window.location.reload(false);
+  };
+
   const updateBalance = async (fromAddress) => {
     await web3.eth.getBalance(fromAddress).then((value) => {
       setBalance(web3.utils.fromWei(value, "ether"));
@@ -90,15 +104,11 @@ function App() {
     e.preventDefault();
     const amount = e.target[0].value;
     const recipient = e.target[1].value;
-    await web3.eth
-      .sendTransaction({
-        from: address,
-        to: recipient,
-        value: web3.utils.toWei(amount, "ether"),
-      })
-      .on("transactionHash", function (hash) {
-        setHash(hash);
-      });
+    await web3.eth.sendTransaction({
+      from: address,
+      to: recipient,
+      value: web3.utils.toWei(amount, "ether"),
+    });
     updateBalance(address);
   };
 
@@ -116,18 +126,36 @@ function App() {
           </Button>
           <br />
           <br />
-
-          <Button
-            onClick={() => logoutAccount()}
-            variant="outlined"
-            color="primary"
-            className="connect__button"
-          >
-            Logout
-          </Button>
-          <br />
-          <br />
-          <br />
+          {metamask && (
+            <>
+              <Button
+                onClick={() => logoutAccount()}
+                variant="outlined"
+                color="primary"
+                className="connect__button"
+              >
+                Logout
+              </Button>
+              <br />
+              <br />
+              <br />
+            </>
+          )}
+          {walletConnect && (
+            <>
+              <Button
+                onClick={() => logoutAccountWallet()}
+                variant="outlined"
+                color="primary"
+                className="connect__button"
+              >
+                Logout
+              </Button>
+              <br />
+              <br />
+              <br />
+            </>
+          )}
 
           {active && (
             <>
@@ -151,18 +179,18 @@ function App() {
               </Button>
               <br />
               <br />
-              <Button
-                onClick={() => getTransaction()}
-                variant="outlined"
-                color="primary"
-                className="connect__button"
-              >
-                Get transaction
-              </Button>
-              <br />
-              <br />
               {metamask && address ? (
                 <>
+                  <Button
+                    onClick={() => getTransaction()}
+                    variant="outlined"
+                    color="primary"
+                    className="connect__button"
+                  >
+                    Get transaction Metamask
+                  </Button>
+                  <br />
+                  <br />
                   <p>
                     Your account : <span className="meta__data">{address}</span>
                   </p>
@@ -176,7 +204,31 @@ function App() {
               ) : null}
               {walletConnect && accountss ? (
                 <>
-                  <p>Your account : {accountss} </p>
+                  <Button
+                    onClick={() => logoutAccountWallet()}
+                    variant="outlined"
+                    color="primary"
+                    className="connect__button"
+                  >
+                    Logout
+                  </Button>
+                  <br />
+                  <br />
+                  <br />
+                  <Button
+                    onClick={() => getTransactionWallet()}
+                    variant="outlined"
+                    color="primary"
+                    className="connect__button"
+                  >
+                    Get transaction WalletConnect
+                  </Button>
+                  <br />
+                  <br />
+                  <p>
+                    Your account :
+                    <span className="meta__data">{accountss}</span>
+                  </p>
                 </>
               ) : null}
               <br />
@@ -205,7 +257,7 @@ function App() {
                 >
                   Send Crypto
                 </Button>
-              </form>
+              </form>{" "}
             </>
           )}
         </div>

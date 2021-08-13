@@ -13,13 +13,13 @@
 }
 .app__tableData {
   margin-top: -80px;
-  width: 87%;
+  width: 75%;
   background: #ffffff;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.03);
   border-radius: 22px;
 }
 .app__tableNoData {
-  margin-top: -80px;
+  margin-top: -90px;
   margin-left: 140px;
 }
 .tableConatainer {
@@ -33,14 +33,14 @@
 }
 .table__Heading {
   font-size: 16px;
-  padding: 10px 20px;
+  padding: 10px 15px;
   background: #ffffff;
   box-shadow: 0px 2px 49px rgba(0, 0, 0, 0.19);
 }
 .table__heading {
   background-color: #b1f8f2;
   font-size: 18px;
-  padding: 10px 20px;
+  padding: 10px 15px;
   cursor: pointer;
 }
 .app__mainTable {
